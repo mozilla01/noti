@@ -1,15 +1,15 @@
-import Notepad from "./components/Notepad";
-import Sidebar from "./components/Sidebar";
-import { useEffect, useState } from "react";
+import Notepad from './components/Notepad';
+import Sidebar from './components/Sidebar';
+import { useEffect, useState } from 'react';
 
 function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
       // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + "=") {
+      if (cookie.substring(0, name.length + 1) === name + '=') {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -24,7 +24,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const fetchNotes = function () {
-    fetch("http://127.0.0.1:8000/api/note-list/")
+    fetch('http://127.0.0.1:8000/api/note-list/')
       .then((response) => response.json())
       .then((data) => {
         setNotes([...data]);
@@ -43,13 +43,13 @@ function App() {
   };
 
   const editNotes = (id, title, content) => {
-    const csrf_token = getCookie("csrftoken");
+    const csrf_token = getCookie('csrftoken');
 
     fetch(`http://127.0.0.1:8000/api/update-note/${id}/`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-type": "application/json",
-        "X-CSRFToken": csrf_token,
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrf_token,
       },
       body: JSON.stringify({ title: title, content: content }),
     })
@@ -58,22 +58,22 @@ function App() {
         console.log(data);
         fetchNotes();
       });
-    console.log("Edited successfully");
+    console.log('Edited successfully');
   };
 
   const createNewNote = () => {
     const newNote = {
-      title: "Untitled",
-      content: "",
+      title: 'Untitled',
+      content: '',
     };
 
-    const csrf_token = getCookie("csrftoken");
+    const csrf_token = getCookie('csrftoken');
 
-    fetch("http://127.0.0.1:8000/api/create-note/", {
-      method: "POST",
+    fetch('http://127.0.0.1:8000/api/create-note/', {
+      method: 'POST',
       headers: {
-        "Content-type": "application/json",
-        "X-CSRFToken": csrf_token,
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrf_token,
       },
       body: JSON.stringify({ title: newNote.title, content: newNote.content }),
     })
@@ -89,13 +89,13 @@ function App() {
     const note = notes.filter((note) => note.id === id);
     console.log(note);
 
-    const csrf_token = getCookie("csrftoken");
+    const csrf_token = getCookie('csrftoken');
 
     fetch(`http://127.0.0.1:8000/api/delete-note/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-type": "application/json",
-        "X-CSRFToken": csrf_token,
+        'Content-type': 'application/json',
+        'X-CSRFToken': csrf_token,
       },
       body: JSON.stringify({ title: note[0].title, content: note[0].content }),
     }).then((response) => {
@@ -104,19 +104,21 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <Sidebar
-        notes={notes}
-        currentNote={currentNote}
-        onSwitch={switchNote}
-        newNote={createNewNote}
-        deleteNote={deleteNote}
-      />
-      <Notepad
-        note={notes.filter((note) => note.id === currentNote)}
-        editNotes={editNotes}
-      />
-    </div>
+    <>
+      <div className="container">
+        <Sidebar
+          notes={notes}
+          currentNote={currentNote}
+          onSwitch={switchNote}
+          newNote={createNewNote}
+          deleteNote={deleteNote}
+        />
+        <Notepad
+          note={notes.filter((note) => note.id === currentNote)}
+          editNotes={editNotes}
+        />
+      </div>
+    </>
   );
 }
 
