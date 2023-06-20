@@ -1,9 +1,9 @@
-import Button from './Button';
+import Button from "./Button";
 
 const Signup = () => {
   return (
     <div className="container-form">
-      <h1>Sign up to noti</h1>
+      <h1>Sign up</h1>
       <hr />
       <label>Email</label>
       <input type="email" name="email" className="email" />
