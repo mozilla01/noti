@@ -4,3 +4,10 @@
 @mixin padding {
   padding: 5% 5%;
 }
+@mixin btn {
+  background-color: black;
+  color: white;
+  width: clamp(5.5em, 10vw, 10em);
+  height: clamp(2em, 5vw, 2.5em);
+  border-radius: 5px;
+}

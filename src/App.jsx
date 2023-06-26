@@ -2,7 +2,7 @@ import Notepad from './components/Notepad';
 import Sidebar from './components/Sidebar';
 import { useEffect, useState } from 'react';
 
-function getCookie(name) {
+export function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';');
@@ -19,12 +19,17 @@ function getCookie(name) {
 }
 
 function App() {
+  const [user, setUser] = useState(localStorage.getItem('User'));
+  const [userId, setUserId] = useState(localStorage.getItem('User-id'));
+  if (!user) {
+    return <h1>Unauthorized</h1>;
+  }
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchNotes = function () {
-    fetch('http://127.0.0.1:8000/api/note-list/')
+    fetch(`http://127.0.0.1:8000/api/note-list/${userId}/`)
       .then((response) => response.json())
       .then((data) => {
         setNotes([...data]);
@@ -65,6 +70,7 @@ function App() {
     const newNote = {
       title: 'Untitled',
       content: '',
+      user_id: userId,
     };
 
     const csrf_token = getCookie('csrftoken');
@@ -75,7 +81,11 @@ function App() {
         'Content-type': 'application/json',
         'X-CSRFToken': csrf_token,
       },
-      body: JSON.stringify({ title: newNote.title, content: newNote.content }),
+      body: JSON.stringify({
+        title: newNote.title,
+        content: newNote.content,
+        user: newNote.user_id,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -98,7 +108,7 @@ function App() {
         'X-CSRFToken': csrf_token,
       },
       body: JSON.stringify({ title: note[0].title, content: note[0].content }),
-    }).then((response) => {
+    }).then(() => {
       fetchNotes();
     });
   };
@@ -107,6 +117,7 @@ function App() {
     <>
       <div className="container">
         <Sidebar
+          user={user}
           notes={notes}
           currentNote={currentNote}
           onSwitch={switchNote}

@@ -22,14 +22,6 @@ hr {
   margin: 1em 0;
 }
 
-.btn {
-  background-color: black;
-  color: white;
-  width: clamp(5.5em, 10vw, 10em);
-  height: clamp(2em, 5vw, 2.5em);
-  border-radius: 5px;
-}
-
 .focused {
   text-decoration: underline;
 }
@@ -48,6 +40,13 @@ hr {
   max-width: 50vw;
   height: min-content;
 }
+.sidebar .btn {
+  background-color: black;
+  color: white;
+  width: clamp(5.5em, 10vw, 10em);
+  height: clamp(2em, 5vw, 2.5em);
+  border-radius: 5px;
+}
 .sidebar,
 .sidebar .note-link > *,
 .sidebar .note-link,
@@ -57,6 +56,13 @@ hr {
 
 form {
   min-height: 100%;
+}
+form .btn {
+  background-color: black;
+  color: white;
+  width: clamp(5.5em, 10vw, 10em);
+  height: clamp(2em, 5vw, 2.5em);
+  border-radius: 5px;
 }
 
 .notepad {
@@ -89,8 +95,6 @@ textarea {
   display: flex;
   flex-direction: column;
   padding: 2.5em 2.5em;
-  border-radius: 10px;
-  max-width: fit-content;
   background: white;
 }
 .container-form input {
@@ -104,10 +108,27 @@ textarea {
 .container-form h1 {
   background: white;
 }
+.container-form .btn {
+  background-color: black;
+  color: white;
+}
 
 .reg-form {
   display: grid;
-  grid-template-columns: fit-content fit-content;
+  grid-template-columns: 50% 50%;
+  max-width: 25rem;
+  margin: 10rem auto;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.reg-form .container-form--1 {
+  grid-column: 1/span 2;
+}
+.reg-form .container-form--2 {
+  grid-column: -3/-1;
+}
+
+.reg-form > .btn {
+  background-color: white;
 }
 
 /*# sourceMappingURL=style.css.map */

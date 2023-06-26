@@ -1,10 +1,24 @@
 import Note from './Note';
 import Button from './Button';
-
-const Sidebar = ({ notes, currentNote, onSwitch, newNote, deleteNote }) => {
+import { useNavigate } from 'react-router-dom';
+const Sidebar = ({
+  user,
+  notes,
+  currentNote,
+  onSwitch,
+  newNote,
+  deleteNote,
+}) => {
+  const navigate = useNavigate();
+  const logoutUser = () => {
+    localStorage.removeItem('User');
+    localStorage.removeItem('User-id');
+    localStorage.removeItem('token');
+    navigate('/');
+  };
   return (
     <div className="sidebar">
-      <h3>Hello, user</h3>
+      <h3>Hello, {user}</h3>
       <hr />
       {notes.map((note) => (
         <Note
@@ -17,6 +31,8 @@ const Sidebar = ({ notes, currentNote, onSwitch, newNote, deleteNote }) => {
         />
       ))}
       <Button value="New Note" type="button" onClick={newNote} />
+      <br />
+      <Button value="Logout" type="button" onClick={logoutUser} />
     </div>
   );
 };
