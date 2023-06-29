@@ -8,7 +8,6 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const onLogin = async function (e) {
-    console.log(username, password);
     e.preventDefault();
     const token_response = await fetch('http://127.0.0.1:8000/api/token/', {
       method: 'POST',
@@ -21,7 +20,6 @@ const Login = () => {
       const tokens = await token_response.json();
       localStorage.setItem('token', JSON.stringify(tokens));
       const details = jwtDecode(tokens.access);
-      console.log(details);
       localStorage.setItem('User', details.username);
       localStorage.setItem('User-id', details.user_id);
       setUsername('');
@@ -31,7 +29,7 @@ const Login = () => {
   };
   return (
     <form className="container-form container-form--1" onSubmit={onLogin}>
-      <h1>Login to noti</h1>
+      <h1>Login to Noti</h1>
       <hr />
       <label>Username</label>
       <input

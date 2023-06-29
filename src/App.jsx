@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router-dom';
 import Notepad from './components/Notepad';
 import Sidebar from './components/Sidebar';
 import { useEffect, useState } from 'react';
@@ -17,23 +18,65 @@ export function getCookie(name) {
   }
   return cookieValue;
 }
+let intervalId;
 
 function App() {
-  const [user, setUser] = useState(localStorage.getItem('User'));
-  const [userId, setUserId] = useState(localStorage.getItem('User-id'));
-  if (!user) {
-    return <h1>Unauthorized</h1>;
+  const user = localStorage.getItem('User');
+  const userId = localStorage.getItem('User-id');
+  const navigate = useNavigate();
+
+  function resetTimer() {
+    clearInterval(intervalId);
+    startTimer();
+  }
+  const updateToken = async () => {
+    const response = await fetch(`http://127.0.0.1:8000/api/token/refresh/`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        refresh: JSON.parse(localStorage.getItem('token')).refresh,
+      }),
+    });
+    const data = await response.json();
+    localStorage.setItem('token', JSON.stringify(data));
+  };
+  function startTimer() {
+    intervalId = setInterval(() => {
+      updateToken();
+    }, 15 * 1000);
+  }
+  if (localStorage.getItem('token')) resetTimer();
+  if (!localStorage.getItem('token')) {
+    return (
+      <>
+        <h1>403 Forbidden</h1>
+        <Link to="/">Login</Link> to Noti.
+      </>
+    );
   }
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchNotes = function () {
-    fetch(`http://127.0.0.1:8000/api/note-list/${userId}/`)
+    fetch(`http://127.0.0.1:8000/api/note-list/${userId}/`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization:
+          'Bearer ' + JSON.parse(localStorage.getItem('token')).access,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setNotes([...data]);
         setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        navigate('/');
       });
   };
 
@@ -60,10 +103,8 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         fetchNotes();
       });
-    console.log('Edited successfully');
   };
 
   const createNewNote = () => {
@@ -89,7 +130,6 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setNotes([...notes, data]);
         setCurrentNote(data.id);
       });
@@ -97,7 +137,6 @@ function App() {
 
   const deleteNote = (id) => {
     const note = notes.filter((note) => note.id === id);
-    console.log(note);
 
     const csrf_token = getCookie('csrftoken');
 

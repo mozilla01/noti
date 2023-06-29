@@ -28,7 +28,6 @@ const RegForm = () => {
       .then((response) => response.json())
       .then((data) => {
         setCurrentForm(1);
-        console.log(data);
       });
   };
   return (
