@@ -10,7 +10,7 @@ const Login = () => {
   const onLogin = async function (e) {
     e.preventDefault();
     const token_response = await fetch(
-      'https://noti-zo7n.onrender.com//api/token/',
+      'https://noti-zo7n.onrender.com/api/token/',
       {
         method: 'POST',
         headers: {

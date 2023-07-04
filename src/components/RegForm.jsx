@@ -13,7 +13,7 @@ const RegForm = () => {
   const onSignup = (username, email, password) => {
     // This function can perhaps be put inside the Signup component.
     const csrf_token = getCookie('csrftoken');
-    fetch('https://noti-zo7n.onrender.com//api/create-user/', {
+    fetch('https://noti-zo7n.onrender.com/api/create-user/', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',

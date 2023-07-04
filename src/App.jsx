@@ -31,7 +31,7 @@ function App() {
   }
   const updateToken = async () => {
     const response = await fetch(
-      `https://noti-zo7n.onrender.com//api/token/refresh/`,
+      `https://noti-zo7n.onrender.com/api/token/refresh/`,
       {
         method: 'POST',
         headers: {
@@ -64,7 +64,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const fetchNotes = function () {
-    fetch(`https://noti-zo7n.onrender.com//api/note-list/${userId}/`, {
+    fetch(`https://noti-zo7n.onrender.com/api/note-list/${userId}/`, {
       method: 'GET',
       headers: {
         'Content-type': 'application/json',
@@ -96,7 +96,7 @@ function App() {
   const editNotes = (id, title, content) => {
     const csrf_token = getCookie('csrftoken');
 
-    fetch(`https://noti-zo7n.onrender.com//api/update-note/${id}/`, {
+    fetch(`https://noti-zo7n.onrender.com/api/update-note/${id}/`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -119,7 +119,7 @@ function App() {
 
     const csrf_token = getCookie('csrftoken');
 
-    fetch('https://noti-zo7n.onrender.com//api/create-note/', {
+    fetch('https://noti-zo7n.onrender.com/api/create-note/', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -143,7 +143,7 @@ function App() {
 
     const csrf_token = getCookie('csrftoken');
 
-    fetch(`https://noti-zo7n.onrender.com//api/delete-note/${id}`, {
+    fetch(`https://noti-zo7n.onrender.com/api/delete-note/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-type': 'application/json',
