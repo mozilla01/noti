@@ -9,13 +9,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const onLogin = async function (e) {
     e.preventDefault();
-    const token_response = await fetch('http://127.0.0.1:8000/api/token/', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    });
+    const token_response = await fetch(
+      'https://noti-zo7n.onrender.com//api/token/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, password: password }),
+      }
+    );
     if (token_response.ok) {
       const tokens = await token_response.json();
       localStorage.setItem('token', JSON.stringify(tokens));
