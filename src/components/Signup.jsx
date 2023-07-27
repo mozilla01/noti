@@ -1,24 +1,24 @@
-import { useState } from 'react';
-import Button from './Button';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 const Signup = ({ onSignup }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (!username || !email || !password) {
-      alert('Please enter complete credentials');
-      return redirect('/');
+      alert("Please enter complete credentials");
+      return redirect("/");
     } else {
       onSignup(username, email, password);
-      setEmail('');
-      setUsername('');
-      setPassword('');
+      setEmail("");
+      setUsername("");
+      setPassword("");
     }
   };
   return (

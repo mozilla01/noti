@@ -1,34 +1,24 @@
-import { useState } from 'react';
-import Button from './Button';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { useState } from "react";
+import Button from "./Button";
 
-const Login = () => {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const onLogin = async function (e) {
+const Login = ({ onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onSubmit = (e) => {
     e.preventDefault();
-    const token_response = await fetch('http://127.0.0.1:8000/api/token/', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    });
-    if (token_response.ok) {
-      const tokens = await token_response.json();
-      localStorage.setItem('token', JSON.stringify(tokens));
-      const details = jwtDecode(tokens.access);
-      localStorage.setItem('User', details.username);
-      localStorage.setItem('User-id', details.user_id);
-      setUsername('');
-      setPassword('');
-      navigate('/notepad');
+
+    if (!username || !password) {
+      alert("Please enter complete credentials");
+      return redirect("/");
+    } else {
+      onLogin(username, password);
+      setUsername("");
+      setPassword("");
     }
   };
   return (
-    <form className="container-form container-form--1" onSubmit={onLogin}>
+    <form className="container-form container-form--1" onSubmit={onSubmit}>
       <h1>Login to Noti</h1>
       <hr />
       <label>Username</label>

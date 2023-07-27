@@ -1,16 +1,17 @@
-import { Link, useNavigate } from 'react-router-dom';
-import Notepad from './components/Notepad';
-import Sidebar from './components/Sidebar';
-import { useEffect, useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import Notepad from "./components/Notepad";
+import Sidebar from "./components/Sidebar";
+import Loader from "./components/Loader";
+import { useEffect, useState } from "react";
 
 export function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
       // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + '=') {
+      if (cookie.substring(0, name.length + 1) === name + "=") {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -21,8 +22,8 @@ export function getCookie(name) {
 let intervalId;
 
 function App() {
-  const user = localStorage.getItem('User');
-  const userId = localStorage.getItem('User-id');
+  const user = localStorage.getItem("User");
+  const userId = localStorage.getItem("User-id");
   const navigate = useNavigate();
 
   function resetTimer() {
@@ -31,24 +32,24 @@ function App() {
   }
   const updateToken = async () => {
     const response = await fetch(`http://127.0.0.1:8000/api/token/refresh/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
       },
       body: JSON.stringify({
-        refresh: JSON.parse(localStorage.getItem('token')).refresh,
+        refresh: JSON.parse(localStorage.getItem("token")).refresh,
       }),
     });
     const data = await response.json();
-    localStorage.setItem('token', JSON.stringify(data));
+    localStorage.setItem("token", JSON.stringify(data));
   };
   function startTimer() {
     intervalId = setInterval(() => {
       updateToken();
     }, 15 * 1000);
   }
-  if (localStorage.getItem('token')) resetTimer();
-  if (!localStorage.getItem('token')) {
+  if (localStorage.getItem("token")) resetTimer();
+  if (!localStorage.getItem("token")) {
     return (
       <>
         <h1>403 Forbidden</h1>
@@ -58,15 +59,16 @@ function App() {
   }
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchNotes = function () {
+    setLoading(true);
     fetch(`http://127.0.0.1:8000/api/note-list/${userId}/`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-type': 'application/json',
+        "Content-type": "application/json",
         Authorization:
-          'Bearer ' + JSON.parse(localStorage.getItem('token')).access,
+          "Bearer " + JSON.parse(localStorage.getItem("token")).access,
       },
     })
       .then((response) => response.json())
@@ -76,14 +78,14 @@ function App() {
       })
       .catch((err) => {
         console.error(err);
-        navigate('/');
+        navigate("/");
       });
   };
 
   useEffect(fetchNotes, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const switchNote = (id) => {
@@ -91,36 +93,39 @@ function App() {
   };
 
   const editNotes = (id, title, content) => {
-    const csrf_token = getCookie('csrftoken');
+    setLoading(true);
+    const csrf_token = getCookie("csrftoken");
 
     fetch(`http://127.0.0.1:8000/api/update-note/${id}/`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-type': 'application/json',
-        'X-CSRFToken': csrf_token,
+        "Content-type": "application/json",
+        "X-CSRFToken": csrf_token,
       },
       body: JSON.stringify({ title: title, content: content }),
     })
       .then((response) => response.json())
       .then((data) => {
+        setLoading(false);
         fetchNotes();
       });
   };
 
   const createNewNote = () => {
+    setLoading(true);
     const newNote = {
-      title: 'Untitled',
-      content: '',
+      title: "Untitled",
+      content: "",
       user_id: userId,
     };
 
-    const csrf_token = getCookie('csrftoken');
+    const csrf_token = getCookie("csrftoken");
 
-    fetch('http://127.0.0.1:8000/api/create-note/', {
-      method: 'POST',
+    fetch("http://127.0.0.1:8000/api/create-note/", {
+      method: "POST",
       headers: {
-        'Content-type': 'application/json',
-        'X-CSRFToken': csrf_token,
+        "Content-type": "application/json",
+        "X-CSRFToken": csrf_token,
       },
       body: JSON.stringify({
         title: newNote.title,
@@ -130,6 +135,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setLoading(false);
         setNotes([...notes, data]);
         setCurrentNote(data.id);
       });
@@ -138,13 +144,13 @@ function App() {
   const deleteNote = (id) => {
     const note = notes.filter((note) => note.id === id);
 
-    const csrf_token = getCookie('csrftoken');
+    const csrf_token = getCookie("csrftoken");
 
     fetch(`http://127.0.0.1:8000/api/delete-note/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-type': 'application/json',
-        'X-CSRFToken': csrf_token,
+        "Content-type": "application/json",
+        "X-CSRFToken": csrf_token,
       },
       body: JSON.stringify({ title: note[0].title, content: note[0].content }),
     }).then(() => {
