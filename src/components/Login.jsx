@@ -1,37 +1,25 @@
 import { useState } from 'react';
 import Button from './Button';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import Response from './Response';
 
-const Login = () => {
-  const navigate = useNavigate();
+const Login = ({ onLogin, response }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const onLogin = async function (e) {
+
+  const onSubmit = (e) => {
     e.preventDefault();
-    const token_response = await fetch(
-      'https://noti-zo7n.onrender.com/api/token/',
-      {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({ username: username, password: password }),
-      }
-    );
-    if (token_response.ok) {
-      const tokens = await token_response.json();
-      localStorage.setItem('token', JSON.stringify(tokens));
-      const details = jwtDecode(tokens.access);
-      localStorage.setItem('User', details.username);
-      localStorage.setItem('User-id', details.user_id);
+
+    if (!username || !password) {
+      alert('Please enter complete credentials');
+      return redirect('/');
+    } else {
+      onLogin(username, password);
       setUsername('');
       setPassword('');
-      navigate('/notepad');
     }
   };
   return (
-    <form className="container-form container-form--1" onSubmit={onLogin}>
+    <form className="container-form container-form--1" onSubmit={onSubmit}>
       <h1>Login to Noti</h1>
       <hr />
       <label>Username</label>
@@ -54,6 +42,8 @@ const Login = () => {
           setPassword(e.target.value);
         }}
       />
+      <Response message={response} />
+      <br />
       <Button type="submit" value="Login" />
     </form>
   );

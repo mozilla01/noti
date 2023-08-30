@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import Button from './Button';
 import { useNavigate } from 'react-router-dom';
+import Response from './Response';
 
-const Signup = ({ onSignup }) => {
+const Signup = ({ onSignup, response }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -55,6 +56,8 @@ const Signup = ({ onSignup }) => {
           setPassword(e.target.value);
         }}
       />
+      <Response message={response} />
+      <br />
       <Button type="submit" value="Sign up" />
     </form>
   );

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Notepad from './components/Notepad';
 import Sidebar from './components/Sidebar';
+import Loader from './components/Loader';
 import { useEffect, useState } from 'react';
 
 export function getCookie(name) {
@@ -61,7 +62,7 @@ function App() {
   }
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchNotes = function () {
     fetch(`https://noti-zo7n.onrender.com/api/note-list/${userId}/`, {
@@ -86,7 +87,7 @@ function App() {
   useEffect(fetchNotes, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const switchNote = (id) => {
@@ -94,6 +95,7 @@ function App() {
   };
 
   const editNotes = (id, title, content) => {
+    setLoading(true);
     const csrf_token = getCookie('csrftoken');
 
     fetch(`https://noti-zo7n.onrender.com/api/update-note/${id}/`, {
@@ -106,11 +108,13 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setLoading(false);
         fetchNotes();
       });
   };
 
   const createNewNote = () => {
+    setLoading(true);
     const newNote = {
       title: 'Untitled',
       content: '',
@@ -133,6 +137,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setLoading(false);
         setNotes([...notes, data]);
         setCurrentNote(data.id);
       });
@@ -142,7 +147,7 @@ function App() {
     const note = notes.filter((note) => note.id === id);
 
     const csrf_token = getCookie('csrftoken');
-
+    setLoading(true);
     fetch(`https://noti-zo7n.onrender.com/api/delete-note/${id}`, {
       method: 'DELETE',
       headers: {
@@ -152,6 +157,7 @@ function App() {
       body: JSON.stringify({ title: note[0].title, content: note[0].content }),
     }).then(() => {
       fetchNotes();
+      setLoading(false);
     });
   };
 
