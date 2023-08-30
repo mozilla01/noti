@@ -1,24 +1,25 @@
-import { useState } from "react";
-import Button from "./Button";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import Button from './Button';
+import { useNavigate } from 'react-router-dom';
+import Response from './Response';
 
-const Signup = ({ onSignup }) => {
+const Signup = ({ onSignup, response }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (!username || !email || !password) {
-      alert("Please enter complete credentials");
-      return redirect("/");
+      alert('Please enter complete credentials');
+      return redirect('/');
     } else {
       onSignup(username, email, password);
-      setEmail("");
-      setUsername("");
-      setPassword("");
+      setEmail('');
+      setUsername('');
+      setPassword('');
     }
   };
   return (
@@ -55,6 +56,8 @@ const Signup = ({ onSignup }) => {
           setPassword(e.target.value);
         }}
       />
+      <Response message={response} />
+      <br />
       <Button type="submit" value="Sign up" />
     </form>
   );

@@ -1,20 +1,21 @@
-import { useState } from "react";
-import Button from "./Button";
+import { useState } from 'react';
+import Button from './Button';
+import Response from './Response';
 
-const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ onLogin, response }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (!username || !password) {
-      alert("Please enter complete credentials");
-      return redirect("/");
+      alert('Please enter complete credentials');
+      return redirect('/');
     } else {
       onLogin(username, password);
-      setUsername("");
-      setPassword("");
+      setUsername('');
+      setPassword('');
     }
   };
   return (
@@ -41,6 +42,8 @@ const Login = ({ onLogin }) => {
           setPassword(e.target.value);
         }}
       />
+      <Response message={response} />
+      <br />
       <Button type="submit" value="Login" />
     </form>
   );
